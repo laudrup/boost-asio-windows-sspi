@@ -77,15 +77,10 @@ certificates and keys from the Windows certificate stores directly.</p>
 <h2>HTTPS Client<a class="headerlink" href="#https-client" title="Permalink to this headline">¶</a></h2>
 <p>This example demonstrates a basic synchronous HTTPS client using
 boost::beast.</p>
-<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;boost/beast/core.hpp&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;boost/beast/http.hpp&gt;</span><span class="cp"></span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;boost/beast/http.hpp&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;boost/beast/version.hpp&gt;</span><span class="cp"></span>
 
-<span class="cp">#ifdef _WIN32</span>
 <span class="cp">#include</span> <span class="cpf">&lt;boost/wintls.hpp&gt;</span><span class="cp"></span>
-<span class="cp">#else</span>
-<span class="cp">#include</span> <span class="cpf">&lt;boost/beast/ssl.hpp&gt;</span><span class="cp"></span>
-<span class="cp">#endif</span>
 
 <span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;regex&gt;</span><span class="cp"></span>
@@ -94,16 +89,7 @@ boost::beast.</p>
 <span class="k">namespace</span> <span class="n">beast</span> <span class="o">=</span> <span class="n">boost</span><span class="o">::</span><span class="n">beast</span><span class="p">;</span>      <span class="c1">// from &lt;boost/beast.hpp&gt;</span>
 <span class="k">namespace</span> <span class="n">http</span> <span class="o">=</span> <span class="n">beast</span><span class="o">::</span><span class="n">http</span><span class="p">;</span>        <span class="c1">// from &lt;boost/beast/http.hpp&gt;</span>
 <span class="k">namespace</span> <span class="n">net</span> <span class="o">=</span> <span class="n">boost</span><span class="o">::</span><span class="n">asio</span><span class="p">;</span>         <span class="c1">// from &lt;boost/asio.hpp&gt;</span>
-
-<span class="cp">#ifdef _WIN32</span>
-<span class="k">namespace</span> <span class="n">ssl</span> <span class="o">=</span> <span class="n">boost</span><span class="o">::</span><span class="n">wintls</span><span class="p">;</span>                        <span class="c1">// from &lt;boost/wintls/wintls.hpp&gt;</span>
-<span class="k">using</span> <span class="n">method</span> <span class="o">=</span> <span class="n">boost</span><span class="o">::</span><span class="n">wintls</span><span class="o">::</span><span class="n">method</span><span class="p">;</span>                 <span class="c1">// from &lt;boost/wintls/method.hpp&gt;</span>
-<span class="k">using</span> <span class="n">handshake_type</span> <span class="o">=</span> <span class="n">boost</span><span class="o">::</span><span class="n">wintls</span><span class="o">::</span><span class="n">handshake_type</span><span class="p">;</span> <span class="c1">// from &lt;boost/wintls/handshake_type.hpp&gt;</span>
-<span class="cp">#else</span>
-<span class="k">namespace</span> <span class="n">ssl</span> <span class="o">=</span> <span class="n">boost</span><span class="o">::</span><span class="n">asio</span><span class="o">::</span><span class="n">ssl</span><span class="p">;</span>                                     <span class="c1">// from &lt;boost/asio/ssl.hpp&gt;</span>
-<span class="k">using</span> <span class="n">method</span> <span class="o">=</span> <span class="n">boost</span><span class="o">::</span><span class="n">asio</span><span class="o">::</span><span class="n">ssl</span><span class="o">::</span><span class="n">context_base</span><span class="o">::</span><span class="n">method</span><span class="p">;</span>                <span class="c1">// from &lt;boost/asio/ssl/context_base.hpp&gt;</span>
-<span class="k">using</span> <span class="n">handshake_type</span> <span class="o">=</span> <span class="n">boost</span><span class="o">::</span><span class="n">asio</span><span class="o">::</span><span class="n">ssl</span><span class="o">::</span><span class="n">stream_base</span><span class="o">::</span><span class="n">handshake_type</span><span class="p">;</span> <span class="c1">// from &lt;boost/asio/ssl/context_base.hpp&gt;</span>
-<span class="cp">#endif</span>
+<span class="k">namespace</span> <span class="n">ssl</span> <span class="o">=</span> <span class="n">boost</span><span class="o">::</span><span class="n">wintls</span><span class="p">;</span>       <span class="c1">// from &lt;boost/wintls/wintls.hpp&gt;</span>
 
 <span class="k">using</span> <span class="n">tcp</span> <span class="o">=</span> <span class="n">boost</span><span class="o">::</span><span class="n">asio</span><span class="o">::</span><span class="n">ip</span><span class="o">::</span><span class="n">tcp</span><span class="p">;</span>    <span class="c1">// from &lt;boost/asio/ip/tcp.hpp&gt;</span>
 
@@ -143,20 +129,19 @@ boost::beast.</p>
     <span class="n">net</span><span class="o">::</span><span class="n">io_context</span> <span class="n">ioc</span><span class="p">;</span>
 
     <span class="c1">// The SSL context is required, and holds certificates</span>
-    <span class="n">ssl</span><span class="o">::</span><span class="n">context</span> <span class="n">ctx</span><span class="p">{</span><span class="n">method</span><span class="o">::</span><span class="n">tlsv12_client</span><span class="p">};</span>
+    <span class="n">ssl</span><span class="o">::</span><span class="n">context</span> <span class="n">ctx</span><span class="p">{</span><span class="n">boost</span><span class="o">::</span><span class="n">wintls</span><span class="o">::</span><span class="n">method</span><span class="o">::</span><span class="n">system_default</span><span class="p">};</span>
 
     <span class="c1">// Use the operating systems default certficates for verification</span>
     <span class="n">ctx</span><span class="p">.</span><span class="n">set_default_verify_paths</span><span class="p">();</span>
 
     <span class="c1">// Verify the remote server&#39;s certificate</span>
-<span class="cp">#ifdef _WIN32</span>
     <span class="n">ctx</span><span class="p">.</span><span class="n">verify_server_certificate</span><span class="p">(</span><span class="nb">true</span><span class="p">);</span>
-<span class="cp">#else</span>
-    <span class="n">ctx</span><span class="p">.</span><span class="n">set_verify_mode</span><span class="p">(</span><span class="n">ssl</span><span class="o">::</span><span class="n">verify_peer</span><span class="p">);</span>
-<span class="cp">#endif</span>
 
     <span class="c1">// Construct the TLS stream with the parameters from the context</span>
     <span class="n">ssl</span><span class="o">::</span><span class="n">stream</span><span class="o">&lt;</span><span class="n">beast</span><span class="o">::</span><span class="n">tcp_stream</span><span class="o">&gt;</span> <span class="n">stream</span><span class="p">(</span><span class="n">ioc</span><span class="p">,</span> <span class="n">ctx</span><span class="p">);</span>
+
+    <span class="c1">// Set SNI hostname (many hosts need this to handshake successfully)</span>
+    <span class="n">stream</span><span class="p">.</span><span class="n">set_server_hostname</span><span class="p">(</span><span class="n">host</span><span class="p">);</span>
 
     <span class="c1">// Look up the domain name</span>
     <span class="n">tcp</span><span class="o">::</span><span class="n">resolver</span> <span class="n">resolver</span><span class="p">(</span><span class="n">ioc</span><span class="p">);</span>
@@ -166,7 +151,7 @@ boost::beast.</p>
     <span class="n">beast</span><span class="o">::</span><span class="n">get_lowest_layer</span><span class="p">(</span><span class="n">stream</span><span class="p">).</span><span class="n">connect</span><span class="p">(</span><span class="n">results</span><span class="p">);</span>
 
     <span class="c1">// Perform the TLS handshake</span>
-    <span class="n">stream</span><span class="p">.</span><span class="n">handshake</span><span class="p">(</span><span class="n">handshake_type</span><span class="o">::</span><span class="n">client</span><span class="p">);</span>
+    <span class="n">stream</span><span class="p">.</span><span class="n">handshake</span><span class="p">(</span><span class="n">boost</span><span class="o">::</span><span class="n">wintls</span><span class="o">::</span><span class="n">handshake_type</span><span class="o">::</span><span class="n">client</span><span class="p">);</span>
 
     <span class="c1">// Set up an HTTP GET request message</span>
     <span class="n">http</span><span class="o">::</span><span class="n">request</span><span class="o">&lt;</span><span class="n">http</span><span class="o">::</span><span class="n">string_body</span><span class="o">&gt;</span> <span class="n">req</span><span class="p">{</span><span class="n">http</span><span class="o">::</span><span class="n">verb</span><span class="o">::</span><span class="n">get</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">version</span><span class="p">};</span>
@@ -190,15 +175,12 @@ boost::beast.</p>
 
     <span class="c1">// Shutdown the TLS connection</span>
     <span class="n">stream</span><span class="p">.</span><span class="n">shutdown</span><span class="p">();</span>
-  <span class="p">}</span>
-  <span class="k">catch</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">exception</span> <span class="k">const</span><span class="o">&amp;</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">}</span> <span class="k">catch</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">exception</span> <span class="k">const</span><span class="o">&amp;</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
     <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Error: &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">e</span><span class="p">.</span><span class="n">what</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
     <span class="k">return</span> <span class="n">EXIT_FAILURE</span><span class="p">;</span>
   <span class="p">}</span>
   <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
 <span class="p">}</span>
-
-<span class="c1">//]</span>
 </pre></div>
 </div>
 </div>
@@ -329,6 +311,22 @@ template&lt;&gt;<br /><span class="target" id="classboost_1_1wintls_1_1stream_1a
 <p><dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd>A reference to the next layer in the stack of stream layers. Ownership is not transferred to the caller. </dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv2N5boost6wintls6stream19set_server_hostnameERKNSt6stringE">
+<span id="boost::wintls::stream::set_server_hostname__ssCR"></span><span class="target" id="classboost_1_1wintls_1_1stream_1aaef64cd3b744efcd4c9f747a63b5035d"></span>void <code class="descname">set_server_hostname</code><span class="sig-paren">(</span><em class="property">const</em> std::string &amp;<em>hostname</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv2N5boost6wintls6stream19set_server_hostnameERKNSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Set SNI hostname. </p>
+<p>Sets the SNI hostname the client will use for requesting and validating the server certificate.</p>
+<p>Only used when handshake is performed as <a class="reference internal" href="#namespaceboost_1_1wintls_1a61d555fb61e53b05ea72b3459a05e18ea62608e08adc29a8d6dbc9754e659f125"><span class="std std-ref">handshake_type::client</span></a></p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">hostname</span></code>: The hostname to use in certificate validation </li>
+</ul>
+</dd>
 </dl>
 </p>
 </dd></dl>
