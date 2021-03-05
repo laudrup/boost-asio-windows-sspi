@@ -1,3 +1,6 @@
+.. figure:: logo.jpg
+   :alt: Boost.Wintls logo
+
 Overview
 ========
 
@@ -25,25 +28,25 @@ boost::beast.
 Classes
 =======
 
-boost::wintls::context
-----------------------
+context
+-------
 .. doxygenclass:: boost::wintls::context
    :members:
 
-boost::wintls::stream
----------------------
+stream
+------
 .. doxygenclass:: boost::wintls::stream
    :members:
 
 Enumerations
 ============
 
-boost::wintls::handshake_type
------------------------------
+handshake_type
+--------------
 .. doxygenenum:: boost::wintls::handshake_type
 
-boost::wintls::method
----------------------
+method
+------
 .. doxygenenum:: boost::wintls::method
 
 .. _SSPI/Schannel: https://docs.microsoft.com/en-us/windows-server/security/tls/tls-ssl-schannel-ssp-overview/
