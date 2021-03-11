@@ -18,7 +18,6 @@ Full code to the examples can be found in the `examples`_ directory.
 
 HTTPS Client
 ------------
-
 This example demonstrates a basic synchronous HTTPS client using
 boost::beast.
 
@@ -49,5 +48,21 @@ method
 ------
 .. doxygenenum:: boost::wintls::method
 
+Functions
+=========
+
+x509_to_cert_context
+--------------------
+.. doxygenfunction:: boost::wintls::x509_to_cert_context(const net::const_buffer &x509, file_format format)
+.. doxygenfunction:: boost::wintls::x509_to_cert_context(const net::const_buffer &x509, file_format format, boost::system::error_code& ec)
+
+Type aliases
+============
+
+cert_context_ptr
+----------------
+.. doxygentypedef:: boost::wintls::cert_context_ptr
+
 .. _SSPI/Schannel: https://docs.microsoft.com/en-us/windows-server/security/tls/tls-ssl-schannel-ssp-overview/
 .. _examples: https://github.com/laudrup/boost-wintls/tree/master/examples
+.. _CERT_CONTEXT: https://docs.microsoft.com/en-us/windows/win32/api/wincrypt/ns-wincrypt-cert_context

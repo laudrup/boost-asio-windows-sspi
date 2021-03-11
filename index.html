@@ -45,6 +45,14 @@
 <li><a class="reference internal" href="#method">method</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#functions">Functions</a><ul>
+<li><a class="reference internal" href="#x509-to-cert-context">x509_to_cert_context</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#type-aliases">Type aliases</a><ul>
+<li><a class="reference internal" href="#cert-context-ptr">cert_context_ptr</a></li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -198,6 +206,39 @@ boost::beast.</p>
 <p><dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">connection_method</span></code>: The <a class="reference internal" href="#namespaceboost_1_1wintls_1a501a09a2ea2e9ecefb8d5b7de4337b76"><span class="std std-ref">method</span></a> to use for connections. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N5boost6wintls7context25add_certificate_authorityEPK12CERT_CONTEXT">
+<span id="_CPPv3N5boost6wintls7context25add_certificate_authorityEPK12CERT_CONTEXT"></span><span id="_CPPv2N5boost6wintls7context25add_certificate_authorityEPK12CERT_CONTEXT"></span><span id="boost::wintls::context::add_certificate_authority__CERT_CONTEXTCP"></span><span class="target" id="classboost_1_1wintls_1_1context_1a3baf8a5b5b1d4ea8df47105bf307d3cd"></span><em class="property"><span class="pre">inline</span></em> <span class="pre">void</span> <code class="sig-name descname"><span class="pre">add_certificate_authority</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">CERT_CONTEXT</span> <span class="pre">*</span><em><span class="pre">cert</span></em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5boost6wintls7context25add_certificate_authorityEPK12CERT_CONTEXT" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Add certification authority for performing verification. </p>
+<p>This function is used to add one trusted certification authority to the contexts certificate store used for certificate validation</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cert</span></code>: The certficate to add to the certificate store</p></li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">boost::system::system_error</span></code>: Thrown on failure. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N5boost6wintls7context25add_certificate_authorityEPK12CERT_CONTEXTRN5boost6system10error_codeE">
+<span id="_CPPv3N5boost6wintls7context25add_certificate_authorityEPK12CERT_CONTEXTRN5boost6system10error_codeE"></span><span id="_CPPv2N5boost6wintls7context25add_certificate_authorityEPK12CERT_CONTEXTRN5boost6system10error_codeE"></span><span id="boost::wintls::context::add_certificate_authority__CERT_CONTEXTCP.boost::system::error_codeR"></span><span class="target" id="classboost_1_1wintls_1_1context_1aa711d58bfa7669e3ca8ba73f5e590a59"></span><em class="property"><span class="pre">inline</span></em> <span class="pre">void</span> <code class="sig-name descname"><span class="pre">add_certificate_authority</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">CERT_CONTEXT</span> <span class="pre">*</span><em><span class="pre">cert</span></em>, <span class="pre">boost</span><span class="pre">::</span><span class="pre">system</span><span class="pre">::</span><span class="pre">error_code</span> <span class="pre">&amp;</span><em><span class="pre">ec</span></em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5boost6wintls7context25add_certificate_authorityEPK12CERT_CONTEXTRN5boost6system10error_codeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Add certification authority for performing verification. </p>
+<p>This function is used to add one trusted certification authority to the contexts certificate store used for certificate validation</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cert</span></code>: The certficate to add to the certificate store</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ec</span></code>: Set to indicate what error occurred, if any. </p></li>
 </ul>
 </dd>
 </dl>
@@ -667,6 +708,67 @@ boost::beast.</p>
 
 </div>
 </div>
+<div class="section" id="functions">
+<h1>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="x509-to-cert-context">
+<h2>x509_to_cert_context<a class="headerlink" href="#x509-to-cert-context" title="Permalink to this headline">¶</a></h2>
+<dl class="cpp function">
+<dt id="_CPPv4N5boost6wintls20x509_to_cert_contextERKN3net12const_bufferE11file_format">
+<span id="_CPPv3N5boost6wintls20x509_to_cert_contextERKN3net12const_bufferE11file_format"></span><span id="_CPPv2N5boost6wintls20x509_to_cert_contextERKN3net12const_bufferE11file_format"></span><span id="boost::wintls::x509_to_cert_context__net::const_bufferCR.file_format"></span><span class="target" id="namespaceboost_1_1wintls_1ac58c6d29ca12d2c2ca3bffe203468042"></span><em class="property"><span class="pre">inline</span></em> <a class="reference internal" href="#_CPPv4N5boost6wintls16cert_context_ptrE" title="boost::wintls::cert_context_ptr"><span class="pre">cert_context_ptr</span></a> <code class="sig-prename descclassname"><span class="pre">boost</span><span class="pre">::</span><span class="pre">wintls</span><code class="sig-prename descclassname"><span class="pre">::</span></code></code><code class="sig-name descname"><span class="pre">x509_to_cert_context</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">net</span><span class="pre">::</span><span class="pre">const_buffer</span> <span class="pre">&amp;</span><em><span class="pre">x509</span></em>, <span class="pre">file_format</span> <em><span class="pre">format</span></em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5boost6wintls20x509_to_cert_contextERKN3net12const_bufferE11file_format" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><p><p>Convert certificate from standard X509 format to Windows <a class="reference external" href="https://docs.microsoft.com/en-us/windows/win32/api/wincrypt/ns-wincrypt-cert_context">CERT_CONTEXT</a></p>
+</p>
+</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>A managed cert_context</p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">x509</span></code>: Buffer holding the X509 certificate contents</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">format</span></code>: The file_format of the X509 contents</p></li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">boost::system::system_error</span></code>: Thrown on failure. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N5boost6wintls20x509_to_cert_contextERKN3net12const_bufferE11file_formatRN5boost6system10error_codeE">
+<span id="_CPPv3N5boost6wintls20x509_to_cert_contextERKN3net12const_bufferE11file_formatRN5boost6system10error_codeE"></span><span id="_CPPv2N5boost6wintls20x509_to_cert_contextERKN3net12const_bufferE11file_formatRN5boost6system10error_codeE"></span><span id="boost::wintls::x509_to_cert_context__net::const_bufferCR.file_format.boost::system::error_codeR"></span><span class="target" id="namespaceboost_1_1wintls_1a608971d69c45bf22de3f166414213e88"></span><em class="property"><span class="pre">inline</span></em> <a class="reference internal" href="#_CPPv4N5boost6wintls16cert_context_ptrE" title="boost::wintls::cert_context_ptr"><span class="pre">cert_context_ptr</span></a> <code class="sig-prename descclassname"><span class="pre">boost</span><span class="pre">::</span><span class="pre">wintls</span><code class="sig-prename descclassname"><span class="pre">::</span></code></code><code class="sig-name descname"><span class="pre">x509_to_cert_context</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">net</span><span class="pre">::</span><span class="pre">const_buffer</span> <span class="pre">&amp;</span><em><span class="pre">x509</span></em>, <span class="pre">file_format</span> <em><span class="pre">format</span></em>, <span class="pre">boost</span><span class="pre">::</span><span class="pre">system</span><span class="pre">::</span><span class="pre">error_code</span> <span class="pre">&amp;</span><em><span class="pre">ec</span></em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5boost6wintls20x509_to_cert_contextERKN3net12const_bufferE11file_formatRN5boost6system10error_codeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><p><p>Convert certificate from standard X509 format to Windows <a class="reference external" href="https://docs.microsoft.com/en-us/windows/win32/api/wincrypt/ns-wincrypt-cert_context">CERT_CONTEXT</a></p>
+</p>
+</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>A managed cert_context </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">x509</span></code>: Buffer holding the X509 certificate contents</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">format</span></code>: The file_format of the X509 contents</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ec</span></code>: Set to indicate what error occurred, if any.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="type-aliases">
+<h1>Type aliases<a class="headerlink" href="#type-aliases" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="cert-context-ptr">
+<h2>cert_context_ptr<a class="headerlink" href="#cert-context-ptr" title="Permalink to this headline">¶</a></h2>
+<dl class="cpp type">
+<dt id="_CPPv4N5boost6wintls16cert_context_ptrE">
+<span id="_CPPv3N5boost6wintls16cert_context_ptrE"></span><span id="_CPPv2N5boost6wintls16cert_context_ptrE"></span><span class="target" id="namespaceboost_1_1wintls_1a200c19246951544b2b5803b42176107f"></span><em class="property"><span class="pre">using</span> </em><code class="sig-prename descclassname"><span class="pre">boost</span><span class="pre">::</span><span class="pre">wintls</span><code class="sig-prename descclassname"><span class="pre">::</span></code></code><code class="sig-name descname"><span class="pre">cert_context_ptr</span></code> <span class="pre">=</span> <span class="pre">std</span><span class="pre">::</span><span class="pre">unique_ptr</span><span class="pre">&lt;</span><em class="property"><span class="pre">const</span></em> <span class="pre">CERT_CONTEXT</span><span class="pre">,</span> <span class="pre">decltype(</span><span class="pre">&amp;</span><span class="pre">CertFreeCertificateContext</span><span class="pre">)</span><span class="pre">&gt;</span><a class="headerlink" href="#_CPPv4N5boost6wintls16cert_context_ptrE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><p><p>Custom std::unique_ptr for managing a <a class="reference external" href="https://docs.microsoft.com/en-us/windows/win32/api/wincrypt/ns-wincrypt-cert_context">CERT_CONTEXT</a></p>
+</p>
+ </p>
+</dd></dl>
+
+</div>
+</div>
 
 
           </div>
@@ -679,7 +781,7 @@ boost::beast.</p>
       &copy;2020, Kasper Laudrup.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

@@ -4,16 +4,16 @@ div.document {
 }
 
 div.bodywrapper {
-  margin-left: 20em;
+  margin-left: 22em;
 }
 
 div.body {
-  max-width: 62.5em;
+  max-width: 65em;
   margin-top: 20px;
 }
 
 div.sphinxsidebar {
-  width: 20em;
+  width: 22em;
 }
 
 div.sphinxsidebarwrapper {
@@ -40,6 +40,6 @@ h2 {
   border-bottom: 1px solid #3465a4;
 }
 
-.breathe-sectiondef > dl {
+div.section {
   margin-bottom: 50px;
 }
