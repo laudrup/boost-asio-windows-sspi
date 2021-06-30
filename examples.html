@@ -113,7 +113,7 @@ boost::beast.</p>
     <span class="n">ssl</span><span class="o">::</span><span class="n">context</span> <span class="n">ctx</span><span class="p">{</span><span class="n">boost</span><span class="o">::</span><span class="n">wintls</span><span class="o">::</span><span class="n">method</span><span class="o">::</span><span class="n">system_default</span><span class="p">};</span>
 
     <span class="c1">// Use the operating systems default certficates for verification</span>
-    <span class="n">ctx</span><span class="p">.</span><span class="n">set_default_verify_paths</span><span class="p">();</span>
+    <span class="n">ctx</span><span class="p">.</span><span class="n">use_default_certificates</span><span class="p">(</span><span class="nb">true</span><span class="p">);</span>
 
     <span class="c1">// Verify the remote server&#39;s certificate</span>
     <span class="n">ctx</span><span class="p">.</span><span class="n">verify_server_certificate</span><span class="p">(</span><span class="nb">true</span><span class="p">);</span>
