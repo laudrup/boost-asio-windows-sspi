@@ -1,0 +1,265 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Asynchronous HTTPS Client &#8212; boost::wintls</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="_static/boost-wintls.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Classes" href="classes.html" />
+    <link rel="prev" title="HTTPS Client" href="https_client.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h3><a href="index.html">boost::wintls</a></h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="examples.html">Examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="https_client.html">HTTPS Client</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Asynchronous HTTPS Client</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="classes.html">Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="enumerations.html">Enumerations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="type_aliases.html">Type aliases</a></li>
+</ul>
+
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <figure class="align-default">
+<img alt="Boost.Wintls logo" src="_images/logo.jpg" />
+</figure>
+<section id="asynchronous-https-client">
+<h1>Asynchronous HTTPS Client<a class="headerlink" href="#asynchronous-https-client" title="Permalink to this headline">¶</a></h1>
+<p>This example demonstrates a basic asynchronous HTTPS client using
+<a class="reference external" href="https://github.com/boostorg/beast">boost::beast</a>.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;boost/beast/core.hpp&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;boost/beast/http.hpp&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;boost/beast/version.hpp&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;boost/wintls.hpp&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;cstdlib&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;functional&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;memory&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;regex&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;string&gt;</span><span class="cp"></span>
+
+<span class="k">namespace</span> <span class="n">beast</span> <span class="o">=</span> <span class="n">boost</span><span class="o">::</span><span class="n">beast</span><span class="p">;</span>   <span class="c1">// from &lt;boost/beast.hpp&gt;</span>
+<span class="k">namespace</span> <span class="n">http</span> <span class="o">=</span> <span class="n">beast</span><span class="o">::</span><span class="n">http</span><span class="p">;</span>     <span class="c1">// from &lt;boost/beast/http.hpp&gt;</span>
+<span class="k">namespace</span> <span class="n">net</span> <span class="o">=</span> <span class="n">boost</span><span class="o">::</span><span class="n">asio</span><span class="p">;</span>      <span class="c1">// from &lt;boost/asio.hpp&gt;</span>
+<span class="k">namespace</span> <span class="n">ssl</span> <span class="o">=</span> <span class="n">boost</span><span class="o">::</span><span class="n">wintls</span><span class="p">;</span>    <span class="c1">// from &lt;boost/wintls/wintls.hpp&gt;</span>
+
+<span class="k">using</span> <span class="n">tcp</span> <span class="o">=</span> <span class="n">boost</span><span class="o">::</span><span class="n">asio</span><span class="o">::</span><span class="n">ip</span><span class="o">::</span><span class="n">tcp</span><span class="p">;</span> <span class="c1">// from &lt;boost/asio/ip/tcp.hpp&gt;</span>
+
+<span class="c1">//------------------------------------------------------------------------------</span>
+
+<span class="c1">// Report a failure</span>
+<span class="kt">void</span> <span class="nf">fail</span><span class="p">(</span><span class="n">beast</span><span class="o">::</span><span class="n">error_code</span> <span class="n">ec</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span><span class="o">*</span> <span class="n">what</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="n">what</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;: &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">ec</span><span class="p">.</span><span class="n">message</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// Performs an HTTP GET and prints the response</span>
+<span class="k">class</span> <span class="nc">session</span> <span class="o">:</span> <span class="k">public</span> <span class="n">std</span><span class="o">::</span><span class="n">enable_shared_from_this</span><span class="o">&lt;</span><span class="n">session</span><span class="o">&gt;</span> <span class="p">{</span>
+  <span class="n">tcp</span><span class="o">::</span><span class="n">resolver</span> <span class="n">resolver_</span><span class="p">;</span>
+  <span class="n">ssl</span><span class="o">::</span><span class="n">stream</span><span class="o">&lt;</span><span class="n">beast</span><span class="o">::</span><span class="n">tcp_stream</span><span class="o">&gt;</span> <span class="n">stream_</span><span class="p">;</span>
+  <span class="n">beast</span><span class="o">::</span><span class="n">flat_buffer</span> <span class="n">buffer_</span><span class="p">;</span> <span class="c1">// (Must persist between reads)</span>
+  <span class="n">http</span><span class="o">::</span><span class="n">request</span><span class="o">&lt;</span><span class="n">http</span><span class="o">::</span><span class="n">empty_body</span><span class="o">&gt;</span> <span class="n">req_</span><span class="p">;</span>
+  <span class="n">http</span><span class="o">::</span><span class="n">response</span><span class="o">&lt;</span><span class="n">http</span><span class="o">::</span><span class="n">string_body</span><span class="o">&gt;</span> <span class="n">res_</span><span class="p">;</span>
+
+<span class="k">public</span><span class="o">:</span>
+  <span class="k">explicit</span> <span class="n">session</span><span class="p">(</span><span class="n">net</span><span class="o">::</span><span class="n">io_context</span><span class="o">&amp;</span> <span class="n">ioc</span><span class="p">,</span> <span class="n">ssl</span><span class="o">::</span><span class="n">context</span><span class="o">&amp;</span> <span class="n">ctx</span><span class="p">)</span>
+    <span class="o">:</span> <span class="n">resolver_</span><span class="p">(</span><span class="n">net</span><span class="o">::</span><span class="n">make_strand</span><span class="p">(</span><span class="n">ioc</span><span class="p">))</span>
+    <span class="p">,</span> <span class="n">stream_</span><span class="p">(</span><span class="n">net</span><span class="o">::</span><span class="n">make_strand</span><span class="p">(</span><span class="n">ioc</span><span class="p">),</span> <span class="n">ctx</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">}</span>
+
+  <span class="c1">// Start the asynchronous operation</span>
+  <span class="kt">void</span> <span class="n">run</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">host</span><span class="p">,</span> <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">port</span><span class="p">,</span> <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">path</span><span class="p">,</span> <span class="kt">int</span> <span class="n">version</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// Set SNI hostname (many hosts need this to handshake successfully)</span>
+    <span class="n">stream_</span><span class="p">.</span><span class="n">set_server_hostname</span><span class="p">(</span><span class="n">host</span><span class="p">);</span>
+
+    <span class="c1">// Set up an HTTP GET request message</span>
+    <span class="n">req_</span><span class="p">.</span><span class="n">version</span><span class="p">(</span><span class="n">version</span><span class="p">);</span>
+    <span class="n">req_</span><span class="p">.</span><span class="n">method</span><span class="p">(</span><span class="n">http</span><span class="o">::</span><span class="n">verb</span><span class="o">::</span><span class="n">get</span><span class="p">);</span>
+    <span class="n">req_</span><span class="p">.</span><span class="n">target</span><span class="p">(</span><span class="n">path</span><span class="p">);</span>
+    <span class="n">req_</span><span class="p">.</span><span class="n">set</span><span class="p">(</span><span class="n">http</span><span class="o">::</span><span class="n">field</span><span class="o">::</span><span class="n">host</span><span class="p">,</span> <span class="n">host</span><span class="p">);</span>
+    <span class="n">req_</span><span class="p">.</span><span class="n">set</span><span class="p">(</span><span class="n">http</span><span class="o">::</span><span class="n">field</span><span class="o">::</span><span class="n">user_agent</span><span class="p">,</span> <span class="n">BOOST_BEAST_VERSION_STRING</span><span class="p">);</span>
+
+    <span class="c1">// Look up the domain name</span>
+    <span class="n">resolver_</span><span class="p">.</span><span class="n">async_resolve</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">beast</span><span class="o">::</span><span class="n">bind_front_handler</span><span class="p">(</span><span class="o">&amp;</span><span class="n">session</span><span class="o">::</span><span class="n">on_resolve</span><span class="p">,</span> <span class="n">shared_from_this</span><span class="p">()));</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="n">on_resolve</span><span class="p">(</span><span class="n">beast</span><span class="o">::</span><span class="n">error_code</span> <span class="n">ec</span><span class="p">,</span> <span class="n">tcp</span><span class="o">::</span><span class="n">resolver</span><span class="o">::</span><span class="n">results_type</span> <span class="n">results</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">ec</span><span class="p">)</span>
+      <span class="k">return</span> <span class="n">fail</span><span class="p">(</span><span class="n">ec</span><span class="p">,</span> <span class="s">&quot;resolve&quot;</span><span class="p">);</span>
+
+    <span class="c1">// Set a timeout on the operation</span>
+    <span class="n">beast</span><span class="o">::</span><span class="n">get_lowest_layer</span><span class="p">(</span><span class="n">stream_</span><span class="p">).</span><span class="n">expires_after</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="p">(</span><span class="mi">30</span><span class="p">));</span>
+
+    <span class="c1">// Make the connection on the IP address we get from a lookup</span>
+    <span class="n">beast</span><span class="o">::</span><span class="n">get_lowest_layer</span><span class="p">(</span><span class="n">stream_</span><span class="p">).</span><span class="n">async_connect</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">beast</span><span class="o">::</span><span class="n">bind_front_handler</span><span class="p">(</span><span class="o">&amp;</span><span class="n">session</span><span class="o">::</span><span class="n">on_connect</span><span class="p">,</span> <span class="n">shared_from_this</span><span class="p">()));</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="n">on_connect</span><span class="p">(</span><span class="n">beast</span><span class="o">::</span><span class="n">error_code</span> <span class="n">ec</span><span class="p">,</span> <span class="n">tcp</span><span class="o">::</span><span class="n">resolver</span><span class="o">::</span><span class="n">results_type</span><span class="o">::</span><span class="n">endpoint_type</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">ec</span><span class="p">)</span>
+      <span class="k">return</span> <span class="n">fail</span><span class="p">(</span><span class="n">ec</span><span class="p">,</span> <span class="s">&quot;connect&quot;</span><span class="p">);</span>
+
+    <span class="c1">// Perform the SSL handshake</span>
+    <span class="n">stream_</span><span class="p">.</span><span class="n">async_handshake</span><span class="p">(</span><span class="n">boost</span><span class="o">::</span><span class="n">wintls</span><span class="o">::</span><span class="n">handshake_type</span><span class="o">::</span><span class="n">client</span><span class="p">,</span> <span class="n">beast</span><span class="o">::</span><span class="n">bind_front_handler</span><span class="p">(</span><span class="o">&amp;</span><span class="n">session</span><span class="o">::</span><span class="n">on_handshake</span><span class="p">,</span> <span class="n">shared_from_this</span><span class="p">()));</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="n">on_handshake</span><span class="p">(</span><span class="n">beast</span><span class="o">::</span><span class="n">error_code</span> <span class="n">ec</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">ec</span><span class="p">)</span>
+      <span class="k">return</span> <span class="n">fail</span><span class="p">(</span><span class="n">ec</span><span class="p">,</span> <span class="s">&quot;handshake&quot;</span><span class="p">);</span>
+
+    <span class="c1">// Set a timeout on the operation</span>
+    <span class="n">beast</span><span class="o">::</span><span class="n">get_lowest_layer</span><span class="p">(</span><span class="n">stream_</span><span class="p">).</span><span class="n">expires_after</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="p">(</span><span class="mi">30</span><span class="p">));</span>
+
+    <span class="c1">// Send the HTTP request to the remote host</span>
+    <span class="n">http</span><span class="o">::</span><span class="n">async_write</span><span class="p">(</span><span class="n">stream_</span><span class="p">,</span> <span class="n">req_</span><span class="p">,</span> <span class="n">beast</span><span class="o">::</span><span class="n">bind_front_handler</span><span class="p">(</span><span class="o">&amp;</span><span class="n">session</span><span class="o">::</span><span class="n">on_write</span><span class="p">,</span> <span class="n">shared_from_this</span><span class="p">()));</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="n">on_write</span><span class="p">(</span><span class="n">beast</span><span class="o">::</span><span class="n">error_code</span> <span class="n">ec</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="kt">size_t</span> <span class="n">bytes_transferred</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">boost</span><span class="o">::</span><span class="n">ignore_unused</span><span class="p">(</span><span class="n">bytes_transferred</span><span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">ec</span><span class="p">)</span>
+      <span class="k">return</span> <span class="n">fail</span><span class="p">(</span><span class="n">ec</span><span class="p">,</span> <span class="s">&quot;write&quot;</span><span class="p">);</span>
+
+    <span class="c1">// Receive the HTTP response</span>
+    <span class="n">http</span><span class="o">::</span><span class="n">async_read</span><span class="p">(</span><span class="n">stream_</span><span class="p">,</span> <span class="n">buffer_</span><span class="p">,</span> <span class="n">res_</span><span class="p">,</span> <span class="n">beast</span><span class="o">::</span><span class="n">bind_front_handler</span><span class="p">(</span><span class="o">&amp;</span><span class="n">session</span><span class="o">::</span><span class="n">on_read</span><span class="p">,</span> <span class="n">shared_from_this</span><span class="p">()));</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="n">on_read</span><span class="p">(</span><span class="n">beast</span><span class="o">::</span><span class="n">error_code</span> <span class="n">ec</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="kt">size_t</span> <span class="n">bytes_transferred</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">boost</span><span class="o">::</span><span class="n">ignore_unused</span><span class="p">(</span><span class="n">bytes_transferred</span><span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">ec</span><span class="p">)</span>
+      <span class="k">return</span> <span class="n">fail</span><span class="p">(</span><span class="n">ec</span><span class="p">,</span> <span class="s">&quot;read&quot;</span><span class="p">);</span>
+
+    <span class="c1">// Write the message to standard out</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">res_</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+    <span class="c1">// Set a timeout on the operation</span>
+    <span class="n">beast</span><span class="o">::</span><span class="n">get_lowest_layer</span><span class="p">(</span><span class="n">stream_</span><span class="p">).</span><span class="n">expires_after</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="p">(</span><span class="mi">30</span><span class="p">));</span>
+
+    <span class="c1">// Gracefully close the stream</span>
+    <span class="n">stream_</span><span class="p">.</span><span class="n">async_shutdown</span><span class="p">(</span><span class="n">beast</span><span class="o">::</span><span class="n">bind_front_handler</span><span class="p">(</span><span class="o">&amp;</span><span class="n">session</span><span class="o">::</span><span class="n">on_shutdown</span><span class="p">,</span> <span class="n">shared_from_this</span><span class="p">()));</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="n">on_shutdown</span><span class="p">(</span><span class="n">beast</span><span class="o">::</span><span class="n">error_code</span> <span class="n">ec</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">ec</span> <span class="o">==</span> <span class="n">net</span><span class="o">::</span><span class="n">error</span><span class="o">::</span><span class="n">eof</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">// Rationale:</span>
+      <span class="c1">// http://stackoverflow.com/questions/25587403/boost-asio-ssl-async-shutdown-always-finishes-with-an-error</span>
+      <span class="n">ec</span> <span class="o">=</span> <span class="p">{};</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">ec</span><span class="p">)</span>
+      <span class="k">return</span> <span class="n">fail</span><span class="p">(</span><span class="n">ec</span><span class="p">,</span> <span class="s">&quot;shutdown&quot;</span><span class="p">);</span>
+
+    <span class="c1">// If we get here then the connection is closed gracefully</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="c1">//------------------------------------------------------------------------------</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">**</span> <span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// Exactly one command line argument required - the HTTPS URL</span>
+  <span class="k">if</span><span class="p">(</span><span class="n">argc</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Usage: &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; [HTTPS_URL]</span><span class="se">\n\n</span><span class="s">&quot;</span><span class="p">;</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Example: &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; https://www.boost.org/LICENSE_1_0.txt</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">EXIT_FAILURE</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">url</span><span class="p">{</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]};</span>
+
+  <span class="c1">// Very basic URL matching. Not a full URL validator.</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">regex</span> <span class="n">re</span><span class="p">(</span><span class="s">&quot;https://([^/$:]+):?([^/$]*)(/?.*)&quot;</span><span class="p">);</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">smatch</span> <span class="n">what</span><span class="p">;</span>
+  <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">regex_match</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">what</span><span class="p">,</span> <span class="n">re</span><span class="p">))</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Invalid or unsupported URL: &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">url</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">EXIT_FAILURE</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="c1">// Get the relevant parts of the URL</span>
+  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">host</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="n">what</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+  <span class="c1">// Use default HTTPS port (443) if not specified</span>
+  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">port</span> <span class="o">=</span> <span class="n">what</span><span class="p">[</span><span class="mi">2</span><span class="p">].</span><span class="n">length</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">?</span> <span class="n">what</span><span class="p">[</span><span class="mi">2</span><span class="p">].</span><span class="n">str</span><span class="p">()</span> <span class="o">:</span> <span class="s">&quot;443&quot;</span><span class="p">;</span>
+  <span class="c1">// Use deault path (&#39;/&#39;) if not specified</span>
+  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">path</span> <span class="o">=</span> <span class="n">what</span><span class="p">[</span><span class="mi">3</span><span class="p">].</span><span class="n">length</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">?</span> <span class="n">what</span><span class="p">[</span><span class="mi">3</span><span class="p">].</span><span class="n">str</span><span class="p">()</span> <span class="o">:</span> <span class="s">&quot;/&quot;</span><span class="p">;</span>
+
+  <span class="c1">// Use HTTP/1.1</span>
+  <span class="k">const</span> <span class="kt">int</span> <span class="n">version</span> <span class="o">=</span> <span class="mi">11</span><span class="p">;</span>
+
+  <span class="c1">// The io_context is required for all I/O</span>
+  <span class="n">net</span><span class="o">::</span><span class="n">io_context</span> <span class="n">ioc</span><span class="p">;</span>
+
+  <span class="c1">// The SSL context is required, and holds certificates</span>
+  <span class="n">ssl</span><span class="o">::</span><span class="n">context</span> <span class="n">ctx</span><span class="p">{</span><span class="n">boost</span><span class="o">::</span><span class="n">wintls</span><span class="o">::</span><span class="n">method</span><span class="o">::</span><span class="n">system_default</span><span class="p">};</span>
+
+  <span class="c1">// Use the operating systems default certficates for verification</span>
+  <span class="n">ctx</span><span class="p">.</span><span class="n">use_default_certificates</span><span class="p">(</span><span class="nb">true</span><span class="p">);</span>
+
+  <span class="c1">// Verify the remote server&#39;s certificate</span>
+  <span class="n">ctx</span><span class="p">.</span><span class="n">verify_server_certificate</span><span class="p">(</span><span class="nb">true</span><span class="p">);</span>
+
+  <span class="c1">// Launch the asynchronous operation</span>
+  <span class="c1">// The session is constructed with a strand to</span>
+  <span class="c1">// ensure that handlers do not execute concurrently.</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">session</span><span class="o">&gt;</span><span class="p">(</span><span class="n">ioc</span><span class="p">,</span> <span class="n">ctx</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">run</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">version</span><span class="p">);</span>
+
+  <span class="c1">// Run the I/O service. The call will return when</span>
+  <span class="c1">// the get operation is complete.</span>
+  <span class="n">ioc</span><span class="p">.</span><span class="n">run</span><span class="p">();</span>
+
+  <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2020, Kasper Laudrup.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/async_https_client.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
