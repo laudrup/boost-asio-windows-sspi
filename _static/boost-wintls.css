@@ -1,3 +1,7 @@
-div.body {
-  max-width: 80%;
+code.descclassname {
+  padding: 0px;
+}
+
+.dropdown-menu > li > a {
+    text-transform: none;
 }

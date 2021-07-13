@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 
 <html>
@@ -8,7 +7,7 @@
 
     <title>Examples &#8212; boost::wintls</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css" />
     <link rel="stylesheet" type="text/css" href="_static/boost-wintls.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
@@ -18,37 +17,93 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="HTTPS Client" href="https_client.html" />
     <link rel="prev" title="Overview" href="index.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js "></script>
 
   </head><body>
-  <div class="document">
-    
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><h3><a href="index.html">boost::wintls</a></h3>
-<ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="https_client.html">HTTPS Client</a></li>
-<li class="toctree-l2"><a class="reference internal" href="async_https_client.html">Asynchronous HTTPS Client</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="classes.html">Classes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="enumerations.html">Enumerations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="functions.html">Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="type_aliases.html">Type aliases</a></li>
-</ul>
 
-        </div>
-      </div>
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          
+<div id="navbar" class="navbar navbar-default navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">
+          boost-wintls</a>
+      <span class="navbar-text navbar-version pull-left"><b></b></span>
+    </div>
+    <div class="collapse navbar-collapse">
+      <ul class="nav navbar-nav">
+        
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Examples<span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              
+                <li><a href="https_client.html">HTTPS Client</a></li>
+              
+                <li><a href="async_https_client.html">Asynchronous HTTPS Client</a></li>
+              
+            </ul>
+          </li>
+        
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Classes<span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              
+                <li><a href="classes.html#context">context</a></li>
+              
+                <li><a href="classes.html#stream">stream</a></li>
+              
+            </ul>
+          </li>
+        
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Enumerations<span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              
+                <li><a href="enumerations.html#handshake-type">handshake_type</a></li>
+              
+                <li><a href="enumerations.html#method">method</a></li>
+              
+            </ul>
+          </li>
+        
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Functions<span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              
+                <li><a href="functions.html#x509-to-cert-context">x509_to_cert_context</a></li>
+              
+            </ul>
+          </li>
+        
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Type aliases<span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              
+                <li><a href="type_aliases.html#cert-context-ptr">cert_context_ptr</a></li>
+              
+            </ul>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
 
-          <div class="body" role="main">
-            
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
   <figure class="align-default">
 <img alt="Boost.Wintls logo" src="_images/logo.jpg" />
 </figure>
@@ -62,26 +117,21 @@
 </section>
 
 
-          </div>
-          
-        </div>
-      </div>
-    <div class="clearer"></div>
-  </div>
-    <div class="footer">
-      &copy;2020, Kasper Laudrup.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-      |
-      <a href="_sources/examples.rst.txt"
-          rel="nofollow">Page source</a>
     </div>
-
-    
-
-    
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2021, Kasper Laudrup.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.1.0.<br/>
+    </p>
+  </div>
+</footer>
   </body>
 </html>
